@@ -278,6 +278,39 @@ nav {
   background-color: $lightGray;
 }
 
+.technologies {
+  font-size: 13px;
+  color: $gray;
+}
+
+.experimental-title, .project-title {
+  margin-bottom: 0px;
+}
+
+.experimental-quip {
+  font-size: 16px;
+}
+
+.project-visit {
+  position: relative;
+  top: -7px;
+  left: 8px;
+  background-color: $lightGray;
+  border-bottom: solid 6px $darkGray;
+  padding: 6px;
+  font-size: 15px;
+  a {
+    color: inherit;
+  }
+  &:hover {
+    color: $blue;
+  }
+
+  @include mobile {
+    left: 0px;
+  }
+}
+
 footer {
   padding: 20px 0;
   text-align: center;

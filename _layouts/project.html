@@ -1,0 +1,22 @@
+---
+layout: default
+---
+
+<article class="post">
+  <h1 class="experimental-title">
+    {{ page.title }}
+    {% include demo-link.html link=page.website %}
+  </h1>
+  <div class="technologies">Technologies: {{ page.technologies }}</div>
+
+
+  <div class="entry">
+    {{ content }}
+  </div>
+
+  <div class="date">
+    Created on {{ page.date | date: "%B %e, %Y" }}
+  </div>
+
+  {% include disqus.html %}
+</article>

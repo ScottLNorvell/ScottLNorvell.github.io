@@ -1,0 +1,23 @@
+---
+layout: default
+---
+<p class="experimental-quip">Some fun experimental projects with varying levels of pointlessness.</p>
+
+<div class="posts">
+  {% for post in site.categories.experimental %}
+    <article class="post">
+
+      <h1 class="experimental-title">
+        <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+        {% include demo-link.html link=post.website %}
+      </h1>
+      <div class="technologies">Technologies: {{ post.technologies }}</div>
+
+      <div class="entry">
+        {{ post.excerpt }}
+      </div>
+
+      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
+    </article>
+  {% endfor %}
+</div>
