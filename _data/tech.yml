@@ -1,0 +1,15 @@
+ember:
+  link: http://emberjs.com
+  name: Ember.js
+js:
+  link: https://www.javascript.com/
+  name: Javascript
+rails:
+  link: http://rubyonrails.org
+  name: Ruby on Rails
+postgres:
+  link: ''
+  name: PostgreSQL
+mongo:
+  link: https://www.mongodb.com
+  name: MongoDB
