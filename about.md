@@ -10,6 +10,6 @@ Welcome to [ScottLNorvell.com]({{site.url}})! My name is Scott Norvell. I am a f
 
 ### More About Me
 
-I am obsessed with [Javascript](https://www.javascript.com/) and [Ember.js](http://emberjs.com/). I also love databases like [MongoDB](https://www.mongodb.com/) and working with [Ruby on Rails](http://rubyonrails.org/) to create awesome apis to feed my frontend [Javascript](https://www.javascript.com/) applications.
+I am obsessed with {% include tech-link.md key="js" %} and {% include tech-link.md key="ember" %}. I also love databases like {% include tech-link.md key="mongo" %} and working with {% include tech-link.md key="rails" %} to create awesome apis to feed my frontend {% include tech-link.md key="js" %} applications.
 
 ![Me Sepia](/images/me-sepia.jpg)
