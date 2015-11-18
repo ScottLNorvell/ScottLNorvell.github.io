@@ -3,6 +3,7 @@ layout: project
 title: Another Circle Game
 technologies:  KineticJS
 website: http://scottlnorvell.com/kinetic_fun/
+group_with: experimental
 ---
 
 An abstract game of beautiful designs, [{{page.title}}]({{page.website}}) challenges you to click on the blue circle without getting hit by the red circle. 

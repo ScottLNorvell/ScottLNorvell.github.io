@@ -4,7 +4,7 @@ layout: default
 
 <div class="posts">
   {% for post in site.posts %}
-    {% if post.categories[0] == 'blog' %}
+    {% if post.group_with == 'blog' %}
       {% include blog-exerpt.html post=post %}
     {% else %}
       {% include project-exerpt.html post=post %}

@@ -1,12 +1,12 @@
 ---
 layout: default
-page_category: 'experimental'
+page_category: experimental
 ---
 <p class="experimental-quip">Some fun experimental projects with varying levels of pointlessness.</p>
 
 <div class="posts">
   {% for post in site.posts %}
-    {% if post.categories[0] == page.page_category %}
+    {% if post.group_with == page.page_category %}
       {% include project-exerpt.html post=post %}
     {% endif %}
   {% endfor %}
