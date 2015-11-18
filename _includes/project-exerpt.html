@@ -1,0 +1,13 @@
+<article class="post">
+  <h1 class="experimental-title">
+    <a href="{{ site.baseurl }}{{ include.post.url }}">{{ include.post.title }}</a>
+    {% include demo-link.html link=include.post.website %}
+  </h1>
+  <div class="technologies">Technologies: {{ include.post.technologies }}</div>
+
+  <div class="entry">
+    {{ include.post.excerpt }}
+  </div>
+
+  <a href="{{ site.baseurl }}{{ include.post.url }}" class="read-more">Read More</a>
+</article>

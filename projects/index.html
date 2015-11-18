@@ -1,24 +1,14 @@
 ---
 layout: default
+page_category: 'projects'
 ---
 
 <div class="experimental-quip">Here are some projects I have created or contributed to.</div>
 
 <div class="posts">
-  {% for post in site.categories.projects %}
-    <article class="post">
-
-      <h1 class="experimental-title">
-        <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
-        {% include demo-link.html link=post.website %}
-      </h1>
-      <div class="technologies">Technologies: {{ post.technologies }}</div>
-
-      <div class="entry">
-        {{ post.excerpt }}
-      </div>
-
-      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
-    </article>
+  {% for post in site.posts %}
+    {% if post.categories[0] == page.page_category %}
+      {% include project-exerpt.html post=post %}
+    {% endif %}
   {% endfor %}
 </div>
