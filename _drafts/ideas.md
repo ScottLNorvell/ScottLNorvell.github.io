@@ -44,3 +44,16 @@ perhaps re-work ember-refresher doc
   + unit
   + integration
   + acceptance
+
+### Musings in premature optimizations
+
+### My Code Review policy
+- scrutinize
+- if you haven't made ONE suggestion, you haven't done your job
+- even if you don't agree with the suggestion
+  + start the conversation! (possibly not worth changing, but did you consider:)
+- even if it's a one-line change (more of a challenge)
+- changes:
+  + style-guide
+  + could this be dryer
+  + could this be prematurely optimized?
