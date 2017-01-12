@@ -6,6 +6,16 @@ group_with: blog
 
 So we should choose one and do it!
 
+### Testing window Storage event/ Keep 2 tabs in sync without WebSockets
+
+### Stubbing JSonP
+
+### ServiceWorker Adventures?
+
+### Ember as all-purpose test harness
+
+### Reading Open Source Library
+
 ### MongoDB and Mongoid (tips and tricks)
 - take a look and re-work n+1 tracker docs
 - optimizing
