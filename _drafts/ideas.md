@@ -6,6 +6,10 @@ group_with: blog
 
 So we should choose one and do it!
 
+### Refactoring code to make it more "Testable"
+
+### Debugging someone else's minified code
+
 ### Testing window Storage event/ Keep 2 tabs in sync without WebSockets
 
 ### Stubbing JSonP
