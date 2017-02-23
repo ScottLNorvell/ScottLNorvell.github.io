@@ -1,19 +1,21 @@
 ---
 layout: post
-title: Stubbing JsonP Requests For Testing
+title: Stubbing JSONP Requests For Testing
 group_with: blog
 ---
 
-A front-end javascript test suite should live as independent of the internet as possible. It is good to stub out all data requests in your test suite for a number of reasons.
+A front-end Javascript test suite should live as independent of "the internet" as possible. It is a good idea to stub out all data requests in your test suite to return consistent and predictable fixture data. There are a number of reasons for this: 
 
-- Data is alive! Your data might change under your nose breaking assertions you might have made in your test suite.
-- Your front end test suite is not testing the ability of your api or a third party api to return data.
-- If a third party's api is down, your test suite should still run.
+- The data on your server or a third party api could change breaking assertions made in your test suite. (For example, an editor might change a title or description). 
+- Your front-end test suite is not testing the ability of your api to return data. (You should have a back-end test suite for that).
+- Your front-end test suite is also not testing the ability of a third party api to return data. 
+- If a third party api is down, your test suite should still run. (And you should probably have test cases that handle this scenario).
+- As much as it is possible, your test suite should only break if your code breaks.
 
-There are a number of ways to stub traditional cross domain data requests, most of which involve temporarily rewriting `XMLHttpRequest` or jQuery's ajax method. (Have a look at [sinon's fake server](http://sinonjs.org/docs/#server)). However, it is a bit trickier to stub a JsonP request since there is no standard api for making one. 
+There are a number of ways to stub traditional cross domain data requests, most of which involve temporarily rewriting `XMLHttpRequest` or jQuery's ajax method. (Have a look at [sinon's fake server](http://sinonjs.org/docs/#server)). However, it is a bit trickier to stub a JSONP request since there is no standard api for making one. 
 
-### A Quick Overview of How JsonP Works
-JsonP is essentially a browser hack to get around CORS issues. Instead of using an `XMLHttpRequest` to fetch data from a different domain, you use a `<script>` tag. Because of jQuery's ajax method, the casual developer can invoke JsonP by simply changing one letter. (`$.ajax({ dataType: 'jsonp', url })` vs. `$.ajax({ dataType: 'json', url })`). However, to demystify things, here is a ridiculously simple example:
+### A Quick Overview of How JSONP Works
+JSONP is essentially a browser hack to get around cross domain issues.  Instead of using an `XMLHttpRequest` to fetch data from a different domain, you use a `<script>` tag. Because of jQuery's ajax method, the casual developer can invoke JSONP without really thinking about it simply by changing one letter in the options hash. (`$.ajax({ dataType: 'jsonp', url })` vs. `$.ajax({ dataType: 'json', url })`). However, to demystify things, here is a ridiculously simple implementation:
 
 ```javascript
 // create a unique callback and put it on the window
@@ -35,25 +37,27 @@ script.onload = () => // consider removing the script here
 document.body.appendChild(script);
 ```
 
-## Stubbing a JsonP Request
-Now that you know how JsonP works, there are a handful of options for stubbing out these types of requests to return fixture data in a test suite.
+In this example, the response from `requestUrl` will be formatted to immmediately call the provided callback with the data it retrieves.
+
+## Stubbing a JSONP Request
+Now that you know how JSONP works, there are a handful of options for stubbing out these types of requests to return fixture data in a test suite.
 
 ### Find and Stub
-The easiest way to stub a JsonP request (especially if you own the code making the request) is to find the specific method and temporarily overwrite it. Imagine you've written a utility called `requester` that makes different types of requests. This utility has a method called `getJsonP` that returns a `Promise` for data requested via JsonP. [Sinon](http://sinonjs.org/docs/) is an excellent utility for stubbing individual methods in a test suite. However doing it yourself is quite easy.
+The easiest way to stub a JSONP request (especially if you own the code making the request) is to find the specific method and temporarily overwrite it. Imagine you've written a utility called `requester` that makes different types of requests. This utility has a method called `getJSONP` that returns a `Promise` for data requested via JSONP. [Sinon](http://sinonjs.org/docs/) is an excellent utility for stubbing individual methods in a test suite. However doing it yourself is quite easy.
 
 ```javascript
 import requester from 'utils/requester';
 
 // create a temporary private variable to hold the default 
-// implementation of getJsonP
-let _oldGetJsonP;
+// implementation of getJSONP
+let _oldGetJSONP;
 
-// export a utility function to stub getJsonP with fixture data
-export function stubGetJsonP(fixtureData) {
+// export a utility function to stub getJSONP with fixture data
+export function stubGetJSONP(fixtureData) {
   // cache the default implementation (to restore later)
-  _oldGetJsonP = requester.getJsonP;
-  // overwrite `getJsonP` to return your fixture data
-  requester.getJsonP = () => {
+  _oldGetJSONP = requester.getJSONP;
+  // overwrite `getJSONP` to return your fixture data
+  requester.getJSONP = () => {
     // many modern libraries return promises
     // calling Promise.resolve assures the return result
     // will have the same api (i.e. `.then`) as the default
@@ -64,15 +68,15 @@ export function stubGetJsonP(fixtureData) {
 
 // export a utility function to restore the default
 // (be sure to call this after every test runs to avoid bugs!)
-export function restoreGetJsonP() {
-  // only restore if it exists, otherwise you'll lose the 
-  // default implementation
-  if (_oldGetJsonP) {
-    requester.getJsonP = _oldGetJsonP;
+export function restoreGetJSONP() {
+  // only restore if it exists, otherwise you will overwrite 
+  // the default implementation
+  if (_oldGetJSONP) {
+    requester.getJSONP = _oldGetJSONP;
   }
-  // null out `_oldGetJsonP` so that subsequent calls to this 
+  // null out `_oldGetJSONP` so that subsequent calls to this 
   // method are No-ops
-  _oldGetJsonP = null;
+  _oldGetJSONP = null;
 }
 
 ```
@@ -80,10 +84,10 @@ export function restoreGetJsonP() {
 >NOTE: Later on we'll get into [how to use stubbing utilities](#useage) like this in a test suite. 
 
 ### Hijack the `src`
-And now for the fun part! Imagine you are using some sort of minified third party SDK (like from an ad company) and need to, say, test if ads are rendering before a video in your custom html5 player. (Is this sounding like a true story?) As it turns out, javascript enables a glorious hack for this through the use of [`Object.defineProperty`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty).
+And now for the fun part! Imagine you are using some sort of minified third party SDK (like from an ad company) and need to, say, test if ads are rendering before a video in your custom html5 player. (Is this sounding like a true story?) As it turns out, Javascript enables a glorious hack for this through the use of [`Object.defineProperty`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty).
 
 #### A Quick Overview of  `Object.defineProperty`
-Consider an empty object called `obj`. Let's say I a want property `scott` that can only be set to one of three adjectives `'great'`, `'awesome'`, or  `'super'`. When I access the property, it appends `'REALLY '` to the adjective I set.
+Consider an empty object called `obj`. Let's say I want a property `scott` that can only be set to one of three adjectives `'great'`, `'awesome'`, or  `'super'`. When I access the property, it appends `'REALLY '` to the adjective I set.
 
 ```javascript
 obj.scott = 'great';
@@ -97,6 +101,8 @@ This task is actually quite trivial using `Object.defineProperty`.
 
 ```javascript
 // declare acceptable adjectives (great, awesome, super)
+// I like to use a `Set` for this because it is optimized to 
+// query for inclusion (see below)
 const acceptableScottAdjectives = new Set(
   ['great', 'awesome', 'super']
 );
@@ -123,10 +129,10 @@ Object.defineProperty(obj, 'scott', {
 });
 ```
 
-So you as you can see, Javascript gives us a huge amount of control over how getters and setters (`property=`) behave. Based on this example, we can extrapolate a solution to stubbing our simple JSONP method above.
+As you can see, Javascript gives us a huge amount of control over how getters and setters (`property=`) behave. Based on this example, we can extrapolate a solution to stubbing a JSONP request.
 
 #### Redefine `script.src` Getter/Setter
-The key to this stubbing JsonP requests in this manner lies in the following line from the example [JsonP implementation](#a-quick-overview-of-how-jsonp-works) above: `script.src = requestUrl`. Since this is a basic setter method, we can use `Object.defineProperty` to control and potentially modify how this line behaves. First, we need to mimic the original behavior so that our meddling doesn't break any other code that depends on setting the `src` property of a script element. The following example should suffice.
+The key to this stubbing JSONP requests in this manner lies in the following line from the example [JSONP implementation](#a-quick-overview-of-how-jsonp-works) above: `script.src = requestUrl`. Since this is a basic setter method, we can use `Object.defineProperty` to control and potentially modify how this line behaves. First, we need to mimic the original behavior so that our meddling doesn't break any other code that depends on setting the `src` property of a script element. The following example should suffice.
 
 ```javascript
 // `HTMLScriptElement.prototype` is standing in for `obj`
@@ -169,7 +175,7 @@ function set(src) {
 }
 ```
 
-... whoah. Now that we've seen how we can maliciously overwrite the `src` setter, let's see what we'll need to conditionally modify the `src` to stub a JsonP request in a test environment. But first, let's wrap everything into a nice exportable util called `watchScriptSrc`.
+... whoah. Now that we've seen how we can maliciously overwrite the `src` setter, let's see what we'll need to conditionally modify the `src` to stub a JSONP request in a test environment. But first, let's wrap everything into a nice exportable util called `watchScriptSrc`.
 
 ```javascript
 // if we call this more than once in a page's lifecycle, 
@@ -214,16 +220,16 @@ export function watchScriptSrc() {
 
 ```
 
-To stub a JsonP response in a test environment, in addition to `watchScriptSrc`, we need the following:
+To stub a JSONP response in a test environment, in addition to `watchScriptSrc`, we need the following:
 
-- `stubJsonPResponse`/`restoreJsonPResponses`: Just like the example above, as part of the public api, we'll need a way for the user to stub specific JsonP responses with custom fixture data before each test and restore the default implementation after each test is run.
-- `conditionallySwapSrc`: We saw this in `watchScriptSrc`. To implement, we'll check regular expression patterns set in `stubJsonPResponse` and replace the `src` if a match is found.
-- `fakeJsonPResponseURL`: We will need a way to create a replacement url that will call the provided callback with the fixture data.
-- `extractQueryParams`: Lastly, to get a reference to the JsonP callback function we'll need some kind of utility to extract query params from a url.
+- `stubJSONPResponse`/`restoreJSONPResponses`: Just like the example above, as part of the public api, we'll need a way for the user to stub specific JSONP responses with custom fixture data before each test and restore the default implementation after each test is run.
+- `conditionallySwapSrc`: We saw this in `watchScriptSrc`. To implement, we'll check regular expression patterns set in `stubJSONPResponse` and replace the `src` if a match is found.
+- `fakeJSONPResponseURL`: We will need a way to create a replacement url that will call the provided callback with the fixture data.
+- `extractQueryParams`: Lastly, to get a reference to the JSONP callback function we'll need some kind of utility to extract query params from a url.
 
 Let's get started!
 
-#### `stubJsonPResponse`/`restoreJsonPResponses`
+#### `stubJSONPResponse`/`restoreJSONPResponses`
 We'll store the url patterns we want to stub along with the intended fixture data using a cool [ES6 `Map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) structure for a few reasons:
 
 1. You can use regular expressions as keys! (stay tuned for why that's cool)
@@ -233,13 +239,13 @@ We'll store the url patterns we want to stub along with the intended fixture dat
 ```javascript
 // Here's that Map I was telling you about
 const stubMap = new Map();
-export function stubJsonPResponse(
+export function stubJSONPResponse(
     // a regular expression that matches the url we 
     // want to stub. (like `/example\.com/`)
     regex, 
     // the fixture data to return instead of the response
     data, 
-    // The query param that stores the jsonp callback.
+    // The query param that stores the JSONP callback.
     // Use 'callback' as the default but allow for others. 
     // (like 'cbfn' etc)
     callbackKey = 'callback'
@@ -249,14 +255,14 @@ export function stubJsonPResponse(
   stubMap.set(regex, { data, callbackKey });
 }
 
-export function restoreJsonPResponses() {
+export function restoreJSONPResponses() {
   // as mentioned above, restoring is simple
   stubMap.clear();
 }
 ```
 
 #### `conditionallySwapSrc`
-We want to check each potential script source against anything that might have been set as part of `stubJsonPResponse`.
+We want to check each potential script source against anything that might have been set as part of `stubJSONPResponse`.
 
 ```javascript
 
@@ -275,7 +281,7 @@ function conditionallySwapSrc(src) {
 
       // if it worked, return a url to the fake response
       if (callbackFnName) {
-        return fakeJsonPResponseURL(data, callbackFnName);
+        return fakeJSONPResponseURL(data, callbackFnName);
       }
     }
   }
@@ -288,11 +294,11 @@ function conditionallySwapSrc(src) {
 #### `extractQueryParams`
 This basically needs to turn `example.com?scott=great&javascript=fun` into `{scott: 'great', javascript: 'fun'}`. There are a lot of utilities that will do this. You can see my solution in the [full example](#all-together-now) below.
 
-#### `fakeJsonPResponseURL`
-Here comes the fun part. We need to make a JsonP response in memory and reference the response from a url that can be placed on the script tag instead of the original url. It turns out we can use the [`Blob`](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob) and [`URL`](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL) apis for this!
+#### `fakeJSONPResponseURL`
+Here comes the fun part. We need to make a JSONP response in memory and reference the response from a url that can be placed on the script tag instead of the original url. It turns out we can use the [`Blob`](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob) and [`URL`](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL) apis for this!
 
 ```javascript
-function fakeJsonPResponseURL(data, callbackName) {
+function fakeJSONPResponseURL(data, callbackName) {
   // stringify our data
   const json = JSON.stringify(data);
   // build our template
@@ -307,27 +313,27 @@ function fakeJsonPResponseURL(data, callbackName) {
 ```
 
 #### Useage
-Now how might you use this in a test? Here is a simple example written in `Ember`'s flavor of `QUnit`. The concept can be applied to most Javascript test frameworks.
+Now how might you use this in a test? Here is a simple example written in `QUnit`. The concept can be applied to most Javascript test frameworks.
 
 ```javascript
 import { 
   watchScriptSrc, 
-  stubJsonPResponse, 
-  restoreJsonPResponses 
-} from 'jsonp-stubber';
+  stubJSONPResponse, 
+  restoreJSONPResponses 
+} from 'JSONP-stubber';
 import requester from 'utils/requester';
 
 // This will run once before all of the tests
 QUnit.begin(() => watchScriptSrc());
 // This will clear out our stubMap after every test.
-QUnit.testDone(() => restoreJsonPResponses());
+QUnit.testDone(() => restoreJSONPResponses());
 
-QUnit.test('my JsonP response returns fake data', (assert) => {
+QUnit.test('my JSONP response returns fake data', (assert) => {
   const fakeData = { scott: 'awesome' };
   const done = assert.async();
-  stubJsonPResponse(/example\.com/, fakeData);
-  // call some code that invokes a JsonP request to example.com
-  requester.getJsonP('//example.com/data.js?callback=myCallback')
+  stubJSONPResponse(/example\.com/, fakeData);
+  // call some code that invokes a JSONP request to example.com
+  requester.getJSONP('//example.com/data.js?callback=myCallback')
     .then((data) => {
       assert.deepEqual(
         data, 
@@ -349,7 +355,7 @@ Overwriting the getter/setter for an Html object in Safari simply errors out. Gi
 On that note, it is possibly a bug that this works in other browsers at all! I suppose there is a chance the Chrome or Firefox teams will read this blog post and patch the bug in the next release. It is also worth noting that the [`Blob`](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob) and [`URL`](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL) apis are considered experimental.
 
 #### Third Party Code Might Change Its Implementation
-The "Hijack the `src`" method is really only recommended to test code that you do not have control over (like third party code). It is probably safer and more future-proof to use the "Find and Stub" method for code that you have control over. It is worth noting that if the third party code you are stubbing refactors to use `setAttribute('src', src)` instead of the `src` setter, "Hijack the `src`" would  stop working.
+The "Hijack the `src`" method is really only recommended to test code that you do not have control over (like third party code). It is probably safer and more future-proof to use the "Find and Stub" method for code that you control. It is worth noting that if the third party code you are stubbing refactors to use `setAttribute('src', src)` instead of the `src` setter, "Hijack the `src`" would  stop working.
 
 ### All Together Now!
 Here is the full example sans comments for your copy-and-paste-style package management purposes.
@@ -385,11 +391,11 @@ export function watchScriptSrc() {
 }
 
 const stubMap = new Map();
-export function stubJsonPResponse(regex, data, callbackKey = 'callback') {
+export function stubJSONPResponse(regex, data, callbackKey = 'callback') {
   stubMap.set(regex, { data, callbackKey });
 }
 
-export function restoreJsonPResponses() {
+export function restoreJSONPResponses() {
   stubMap.clear();
 }
 
@@ -400,14 +406,14 @@ function conditionallySwapSrc(src) {
       const { [callbackKey]: callbackFnName } = extractQueryParams(src);
 
       if (callbackFnName) {
-        return fakeJsonPResponseURL(data, callbackFnName);
+        return fakeJSONPResponseURL(data, callbackFnName);
       }
     }
   }
   return src;
 }
 
-function fakeJsonPResponseURL(data, callbackName) {
+function fakeJSONPResponseURL(data, callbackName) {
   const json = JSON.stringify(data);
   const template = `${callbackName}(${json})`;
   const blob = new Blob([template]);
