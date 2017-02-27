@@ -96,7 +96,7 @@ console.log(obj.scott); // => 'REALLY super'
 obj.scott = 'meh'; // throws error
 ```
 
-This task is actually quite trivial using `Object.defineProperty`.
+This task is actually quite easy using `Object.defineProperty`.
 
 ```javascript
 // declare acceptable adjectives (great, awesome, super)
