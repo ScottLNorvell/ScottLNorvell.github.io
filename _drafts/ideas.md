@@ -12,8 +12,6 @@ So we should choose one and do it!
 
 ### Testing window Storage event/ Keep 2 tabs in sync without WebSockets
 
-### Stubbing JSonP
-
 ### ServiceWorker Adventures?
 
 ### Ember as all-purpose test harness
