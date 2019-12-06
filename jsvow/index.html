@@ -7,7 +7,7 @@ page_category: jsvow
 <div class="posts">
   {% for post in site.posts %}
   {% if post.group_with == page.page_category %}
-  {% include blog-exerpt.html post=post %}
+  {% include blog-excerpt.html post=post %}
   {% endif %}
   {% endfor %}
 </div>

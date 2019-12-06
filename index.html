@@ -5,10 +5,10 @@ layout: default
 <div class="posts">
   {% for post in site.posts %}
     {% if post.group_with == 'blog' %}
-      {% include blog-exerpt.html post=post %}
+      {% include blog-excerpt.html post=post %}
     {% elsif post.group_with == 'jsvow' %}
     {% else %}
-      {% include project-exerpt.html post=post %}
+      {% include project-excerpt.html post=post %}
     {% endif %}
   {% endfor %}
 </div>
