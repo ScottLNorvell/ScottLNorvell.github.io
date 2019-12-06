@@ -270,8 +270,12 @@ nav {
   }
 }
 
+.wrapper-body {
+  min-height: calc(100vh - 86px);
+  padding-bottom: 50px;
+}
+
 .wrapper-footer {
-  margin-top: 50px;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
   background-color: $lightGray;
