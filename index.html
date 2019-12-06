@@ -6,6 +6,7 @@ layout: default
   {% for post in site.posts %}
     {% if post.group_with == 'blog' %}
       {% include blog-exerpt.html post=post %}
+    {% elsif post.group_with == 'jsvow' %}
     {% else %}
       {% include project-exerpt.html post=post %}
     {% endif %}
