@@ -270,6 +270,23 @@ nav {
   }
 }
 
+.word {
+  border: 15px solid #cdcdcd;
+  padding: 10px 20px;
+  margin-top: 20px;
+  border-radius: 4px;
+
+  h2 {
+    color: darken(blue, 20%);
+    margin: 0;
+  }
+
+
+  span {
+    color: darken(orange, 10%);
+  }
+}
+
 .wrapper-body {
   min-height: calc(100vh - 86px);
   padding-bottom: 50px;

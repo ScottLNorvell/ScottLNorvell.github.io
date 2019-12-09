@@ -1,0 +1,22 @@
+---
+layout: default
+---
+
+<article class="post">
+  <h1>JavaScript Variable of the Week</h1>
+  <div class="date">
+    Week of {{ page.date | date: "%B %e, %Y" }}
+  </div>
+  <div class="word">
+    <h2>{{ page.title }} <span>[ {{page.pronunciation}} ]</span></h2>
+  </div>
+
+  <div class="entry">
+    {{ content }}
+  </div>
+
+  <script>
+    console.log('%cWelcome to the Console for "{{page.title}}" [ {{page.pronunciation}} ]', 'font-size: 24px');
+  </script>
+  <script src="{{ site.baseurl }}/jsvow.js"></script>
+</article>
