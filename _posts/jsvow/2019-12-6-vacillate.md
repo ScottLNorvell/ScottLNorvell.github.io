@@ -10,29 +10,21 @@ pronunciation: vas-uh-leyt
 _Utilities:_
 
 ```js
-const sleep = ms => new Promise(
-  resolve => setTimeout(resolve, ms)
-);
-
 const unique = arr => [...new Set(arr)];
 
-const shuffle = arr => {
-  const copy = [...arr];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * i)
-    const temp = copy[i]
-    copy[i] = copy[j]
-    copy[j] = temp
-  }
-  return copy;
-}
+const shuffle = arr => arr
+  .map(a => [Math.random(), a])
+  .sort((a, b) => a[0] - b[0])
+  .map(a => a[1]);
 
-// Return shuffled array making sure no values are repeated
-// (important for vacillating!)
+/**
+ * Return shuffled array making sure no values are repeated
+ * (important for vacillating!)
+ */
 const noRepeatNext = (arr) => {
   const shuffled = shuffle(arr);
   return arr[arr.length - 1] === shuffled[0]
-    ? shuffled.reverse()
+    ? [...shuffled.slice(1), shuffled[0]]
     : shuffled;
 };
 
@@ -41,18 +33,18 @@ const getNext = (arr, i) =>
     ? [noRepeatNext(arr), 0]
     : [arr, i + 1];
 
+function *generateRandomPairs(a, b) {
+  let aIndex = a.length - 1;
+  let bIndex = b.length - 1;
 
-function *genRandomPairs(a, b) {
-  let aIndex = 0;
-  let bIndex = 0;
   while (true) {
+    [a, aIndex] = getNext(a, aIndex);
+    [b, bIndex] = getNext(b, bIndex);
+
     yield [
       a[aIndex],
       b[bIndex],
     ];
-
-    [a, aIndex] = getNext(a, aIndex);
-    [b, bIndex] = getNext(b, bIndex);
   }
 }
 
@@ -69,34 +61,56 @@ _And now..._
 ```js
 // Vacillate [ vas-uh-leyt ]:
 
-const vacillate = async (...ideas) => {
-  ideas = unique(ideas);
+const vacillate = (...args) => {
+  const ideas = unique(args);
+  const TIMES = Math.floor(Math.random() * 10) + 5;
 
   if (ideas.length <= 1) {
     throw new Error('must have more than 1 idea to vacillate');
   }
 
-  const iterator = genRandomPairs(
-    shuffle(ideas),
-    shuffle(templates),
-  );
+  const iterator = generateRandomPairs(ideas, templates);
 
-  const [initialIdea] = iterator.next().value;
-
-  await sleep(100);
-
-  console.log(initialIdea);
-
-  for (let i=0; i<10; i++) {
-    await sleep(100);
-    const [idea, template] = iterator.next().value;
-    console.log(template(idea));
+  let iterations = 1;
+  for (const [idea, template] of iterator) {
+    switch (iterations) {
+      case 1:
+        console.log(idea)
+        break;
+      case TIMES:
+        console.log(`${idea}! (vacillated ${TIMES} times)`);
+        return idea;
+      default:
+        console.log(template(idea));
+        break;
+    }
+    iterations++;
   }
-
-  const [decision] = iterator.next().value;
-
-  return decision;
 };
 ```
 
 > Don't speak JavaScript? Here is the [actual definition of {{page.title}}]({{page.definition_link}}).
+
+## Thoughts
+Wow, this one got more complicated than I thought it would! I definitely wanted a function that could vacillate a random number of times. I also wanted to be able to vacillate on a variable number of ideas.
+
+I vacillated _(see what I did there)_ on whether to show the progress of the vacillation or just return the result. "Trust me... the computer vacillated... here's the result!". In the end, I thought it might "teach" the vocabulary word _better_ to show the progress.
+
+I wanted a function that would take in two arrays of arbitrary length (the `ideas` and the `templates`) and return a random pair from each. I also didn't want to repeat any one item from any consecutive pairs. I figured an infinite generator would do the trick, but getting it just right took a bit longer than expected.
+
+Originally, I made the function asynchronous and had a sleep in between each vacillation so that it really felt like the computer was vacillating:
+
+```js
+const sleep = ms => new Promise(
+  resolve => setTimeout(resolve, ms)
+);
+// and then in the function:
+for (const [idea, template] of iterator) {
+  await sleep(100);
+  switch (iterations) {
+  // ...
+```
+
+Then from a philosophical point of view, I started to think about the concept of writing a program to vacillate for me. We usually write programs to speed things up, so why arbitrarily slow this one down?
+
+This function can vacillate at _most_ 15 times and at _fewest_ 6 times. I feel like I could have gotten silly and dramatically bumped up the total number of possible vacillations.
