@@ -1,28 +1,20 @@
 (function () {
 
-const sleep = ms => new Promise(
-  resolve => setTimeout(resolve, ms)
-);
-
 const unique = arr => [...new Set(arr)];
 
-const shuffle = arr => {
-  const copy = [...arr];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * i)
-    const temp = copy[i]
-    copy[i] = copy[j]
-    copy[j] = temp
-  }
-  return copy;
-}
+const shuffle = arr => arr
+  .map(a => [Math.random(), a])
+  .sort((a, b) => a[0] - b[0])
+  .map(a => a[1]);
 
-// Return shuffled array making sure no values are repeated
-// (important for vacillating!)
+/**
+ * Return shuffled array making sure no values are repeated
+ * (important for vacillating!)
+ */
 const noRepeatNext = (arr) => {
   const shuffled = shuffle(arr);
   return arr[arr.length - 1] === shuffled[0]
-    ? shuffled.reverse()
+    ? [...shuffled.slice(1), shuffled[0]]
     : shuffled;
 };
 
@@ -31,18 +23,18 @@ const getNext = (arr, i) =>
     ? [noRepeatNext(arr), 0]
     : [arr, i + 1];
 
+function *generateRandomPairs(a, b) {
+  let aIndex = a.length - 1;
+  let bIndex = b.length - 1;
 
-function *genRandomPairs(a, b) {
-  let aIndex = 0;
-  let bIndex = 0;
   while (true) {
+    [a, aIndex] = getNext(a, aIndex);
+    [b, bIndex] = getNext(b, bIndex);
+
     yield [
       a[aIndex],
       b[bIndex],
     ];
-
-    [a, aIndex] = getNext(a, aIndex);
-    [b, bIndex] = getNext(b, bIndex);
   }
 }
 
@@ -53,33 +45,31 @@ const templates = [
   idea => `What I really meant was: ${idea}`,
 ];
 
-const vacillate = async (...ideas) => {
-  ideas = unique(ideas);
+const vacillate = (...args) => {
+  const ideas = unique(args);
+  const TIMES = Math.ceil(Math.random() * 10) + 5;
 
   if (ideas.length <= 1) {
     throw new Error('must have more than 1 idea to vacillate');
   }
 
-  const iterator = genRandomPairs(
-    shuffle(ideas),
-    shuffle(templates),
-  );
+  const iterator = generateRandomPairs(ideas, templates);
 
-  const [initialIdea] = iterator.next().value;
-
-  await sleep(100);
-
-  console.log(initialIdea);
-
-  for (let i=0; i<10; i++) {
-    await sleep(100);
-    const [idea, template] = iterator.next().value;
-    console.log(template(idea));
+  let iterations = 1;
+  for (const [idea, template] of iterator) {
+    switch (iterations) {
+      case 1:
+        console.log(idea)
+        break;
+      case TIMES:
+        console.log(`${idea}! (vacillated ${TIMES} times)`);
+        return idea;
+      default:
+        console.log(template(idea));
+        break;
+    }
+    iterations++;
   }
-
-  const [decision] = iterator.next().value;
-
-  return decision;
 };
 
 window.JSVOW = {
@@ -87,11 +77,10 @@ window.JSVOW = {
     vacillate,
   },
   utils: {
-    sleep,
     unique,
     shuffle,
     noRepeatNext,
-    genRandomPairs,
+    generateRandomPairs,
   }
 }
 
