@@ -1,0 +1,10 @@
+<article class="post">
+  <div class="date">
+    Week of {{ include.post.date | date: "%B %e, %Y" }}
+  </div>
+  <a href="{{ site.baseurl }}{{ include.post.url }}" class="word">
+    <h2>{{ include.post.title }} <span>[ {{include.post.pronunciation}} ]</span></h2>
+  </a>
+  <br />
+  <a href="{{ site.baseurl }}{{ include.post.url }}" class="read-more">Read More</a>
+</article>
