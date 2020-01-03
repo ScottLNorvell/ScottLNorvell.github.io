@@ -47,12 +47,12 @@ const templates = [
 
 const vacillate = (...args) => {
   const ideas = unique(args);
-  const TIMES = Math.ceil(Math.random() * 10) + 5;
 
   if (ideas.length <= 1) {
     throw new Error('must have more than 1 idea to vacillate');
   }
 
+  const vacillations = Math.ceil(Math.random() * 10) + 5;
   const iterator = generateRandomPairs(ideas, templates);
 
   let iterations = 1;
@@ -61,8 +61,8 @@ const vacillate = (...args) => {
       case 1:
         console.log(idea)
         break;
-      case TIMES:
-        console.log(`${idea}! (vacillated ${TIMES} times)`);
+      case vacillations:
+        console.log(`${idea}! (vacillated ${vacillations} times)`);
         return idea;
       default:
         console.log(template(idea));
@@ -72,16 +72,19 @@ const vacillate = (...args) => {
   }
 };
 
+const foist = (obj, upon = globalThis) => {
+  Object.entries(obj).forEach(
+    ([key, value]) =>
+      Object.defineProperty(upon, key, {
+        value,
+        writable: false,
+      })
+  );
+};
+
 window.JSVOW = {
-  words: {
-    vacillate,
-  },
-  utils: {
-    unique,
-    shuffle,
-    noRepeatNext,
-    generateRandomPairs,
-  }
+  vacillate,
+  foist,
 }
 
 })();

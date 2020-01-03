@@ -63,12 +63,12 @@ _And now..._
 
 const vacillate = (...args) => {
   const ideas = unique(args);
-  const TIMES = Math.floor(Math.random() * 10) + 5;
 
   if (ideas.length <= 1) {
     throw new Error('must have more than 1 idea to vacillate');
   }
 
+  const vacillations = Math.ceil(Math.random() * 10) + 5;
   const iterator = generateRandomPairs(ideas, templates);
 
   let iterations = 1;
@@ -77,8 +77,8 @@ const vacillate = (...args) => {
       case 1:
         console.log(idea)
         break;
-      case TIMES:
-        console.log(`${idea}! (vacillated ${TIMES} times)`);
+      case vacillations:
+        console.log(`${idea}! (vacillated ${vacillations} times)`);
         return idea;
       default:
         console.log(template(idea));
@@ -94,9 +94,9 @@ const vacillate = (...args) => {
 ## Thoughts
 Wow, this one got more complicated than I thought it would! I definitely wanted a function that could vacillate a random number of times. I also wanted to be able to vacillate on a variable number of ideas.
 
-I vacillated _(see what I did there)_ on whether to show the progress of the vacillation or just return the result. "Trust me... the computer vacillated... here's the result!". In the end, I thought it might "teach" the vocabulary word _better_ to show the progress.
+I vacillated _(see what I did there)_ on whether to show the progress of the vacillation or just return the result. "Trust me. The computer vacillated... Here's the result!". In the end, I thought it might "teach" the vocabulary word better to show progress.
 
-I wanted a function that would take in two arrays of arbitrary length (the `ideas` and the `templates`) and return a random pair from each. I also didn't want to repeat any one item from any consecutive pairs. I figured an infinite generator would do the trick, but getting it just right took a bit longer than expected.
+I wanted a function that would take in two arrays of arbitrary length (the `ideas` and the `templates`) and return a random pair from each. I also didn't want to repeat any one item from any consecutive pairs. That would just be some sloppy vacillating. I figured an infinite generator would do the trick, but getting it just right took a bit longer than expected.
 
 Originally, I made the function asynchronous and had a sleep in between each vacillation so that it really felt like the computer was vacillating:
 
