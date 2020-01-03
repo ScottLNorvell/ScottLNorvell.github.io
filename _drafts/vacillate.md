@@ -89,6 +89,18 @@ const vacillate = (...args) => {
 };
 ```
 
+_Usage_
+
+```js
+const result = vacillate(
+  'do work',
+  'eat lunch',
+  'play video games'
+);
+// result will be one of
+//   'do work', 'eat lunch', or 'play video games'!
+```
+
 > Don't speak JavaScript? Here is the [actual definition of {{page.title}}]({{page.definition_link}}).
 
 ## Thoughts
@@ -96,7 +108,7 @@ Wow, this one got more complicated than I thought it would! I definitely wanted 
 
 I vacillated _(see what I did there)_ on whether to show the progress of the vacillation or just return the result. "Trust me. The computer vacillated... Here's the result!". In the end, I thought it might "teach" the vocabulary word better to show progress.
 
-I wanted a function that would take in two arrays of arbitrary length (the `ideas` and the `templates`) and return a random pair from each. I also didn't want to repeat any one item from any consecutive pairs. That would just be some sloppy vacillating. I figured an infinite generator would do the trick, but getting it just right took a bit longer than expected.
+I wanted a function that would take in two arrays of arbitrary length (the `ideas` and the `templates`) and return a random pair from each. I also didn't want to repeat any one item from any consecutive pairs because that would just be some sloppy vacillating. I figured an infinite generator would do the trick, but getting it just right took a bit longer than expected.
 
 Originally, I made the function asynchronous and had a sleep in between each vacillation so that it really felt like the computer was vacillating:
 
@@ -114,3 +126,29 @@ for (const [idea, template] of iterator) {
 Then from a philosophical point of view, I started to think about the concept of writing a program to vacillate for me. We usually write programs to speed things up, so why arbitrarily slow this one down?
 
 This function can vacillate at _most_ 15 times and at _fewest_ 6 times. I feel like I could have gotten silly and dramatically bumped up the total number of possible vacillations.
+
+### Try it out!
+You can play around with `vacillate` if you open up the JavaScript console on this page. You'll see a friendly message and you can run something like the following:
+
+```js
+> JSVOW.vacillate('eat', 'pray', 'love');
+// see what happens!
+> const lunch = JSVOW.vacillate('pizza', 'mexican', 'burgers');
+// make a decision on lunch!
+```
+
+You can also vacillate (with caution) in your own projects by installing [`vacillate` from npm](https://www.npmjs.com/package/vacillate):
+
+```sh
+npm install vacillate
+```
+
+And in your code:
+
+```js
+import vacillate from 'vacillate';
+
+vacillate('React', 'Ember', 'Svelte', 'Vue');
+```
+
+> NOTE: `vacillate` is only compatible with new versions of Chrome and Firefox and Node >=12 or so.
