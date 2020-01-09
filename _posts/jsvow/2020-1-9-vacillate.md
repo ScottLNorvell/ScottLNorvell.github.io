@@ -102,6 +102,16 @@ const result = vacillate(
 //   It will also be clear that the function vacillated...
 ```
 
+### Try it out!
+You can play around with `vacillate` if you open up the JavaScript console on this page. You'll see a friendly message and you can run something like the following:
+
+```js
+> JSVOW.vacillate('eat', 'pray', 'love');
+// see what happens!
+> const lunch = JSVOW.vacillate('pizza', 'mexican', 'burgers');
+// make a decision on lunch!
+```
+
 > Don't speak JavaScript? Here is the [actual definition of {{page.title}}]({{page.definition_link}}).
 
 ## Thoughts
@@ -132,17 +142,8 @@ Then from a philosophical point of view, I started to think about the concept of
 
 This function can vacillate at _most_ 15 times and at _fewest_ 6 times. I feel like I could have gotten silly and dramatically bumped up the total number of possible vacillations. I wonder how many times a vacillating person vacillates on average. 🤔
 
-### Try it out!
-You can play around with `vacillate` if you open up the JavaScript console on this page. You'll see a friendly message and you can run something like the following:
-
-```js
-> JSVOW.vacillate('eat', 'pray', 'love');
-// see what happens!
-> const lunch = JSVOW.vacillate('pizza', 'mexican', 'burgers');
-// make a decision on lunch!
-```
-
-You can also vacillate in your own projects by installing [`vacillate` from npm](https://www.npmjs.com/package/vacillate):
+## Install
+You can vacillate in your own projects by installing [`vacillate` from npm](https://www.npmjs.com/package/vacillate):
 
 ```sh
 npm install vacillate
@@ -156,10 +157,9 @@ import vacillate from 'vacillate';
 vacillate('React', 'Ember', 'Svelte', 'Vue');
 ```
 
-> NOTE: `vacillate` is only compatible with new versions of Chrome and Firefox and Node >=12 or so.
+> NOTE: `vacillate` is only compatible with new versions of Chrome and Firefox and Node >=12 or so
 
-#### NEW!
-Now you can `vacillate` from the command line by [installing `vacillate` globally](https://www.npmjs.com/package/vacillate) or using [`npx`](https://www.npmjs.com/package/npx).
+You can also vacillate from the command line by [installing `vacillate` globally](https://www.npmjs.com/package/vacillate) or using [`npx`](https://www.npmjs.com/package/npx).
 
 ```sh
 > npx vacillate cookies cake "ice cream"
@@ -181,4 +181,4 @@ cake! (vacillated 14 times)
 I choose: cake
 ```
 
-CAKE 🍰! (That sounds like a great idea)
+CAKE 🍰. That sounds like a great idea!
