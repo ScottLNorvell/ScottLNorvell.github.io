@@ -89,7 +89,7 @@ const vacillate = (...args) => {
 };
 ```
 
-_Usage_
+_Usage:_
 
 ```js
 const result = vacillate(
@@ -99,6 +99,7 @@ const result = vacillate(
 );
 // result will be one of
 //   'do work', 'eat lunch', or 'play video games'!
+//   It will also be clear that the function vacillated...
 ```
 
 > Don't speak JavaScript? Here is the [actual definition of {{page.title}}]({{page.definition_link}}).
@@ -106,11 +107,15 @@ const result = vacillate(
 ## Thoughts
 Wow, this one got more complicated than I thought it would! I definitely wanted a function that could vacillate a random number of times. I also wanted to be able to vacillate on a variable number of ideas.
 
-I vacillated _(see what I did there)_ on whether to show the progress of the vacillation or just return the result. "Trust me. The computer vacillated... Here's the result!". In the end, I thought it might "teach" the vocabulary word better to show progress.
+I vacillated _(see what I did there)_ on whether to show the progress of the vacillation or just return the result.
 
-I wanted a function that would take in two arrays of arbitrary length (the `ideas` and the `templates`) and return a random pair from each. I also didn't want to repeat any one item from any consecutive pairs because that would just be some sloppy vacillating. I figured an infinite generator would do the trick, but getting it just right took a bit longer than expected.
+> "Trust me. The computer vacillated... Here's the result!"
 
-Originally, I made the function asynchronous and had a sleep in between each vacillation so that it really felt like the computer was vacillating:
+In the end, I thought it might "teach" the vocabulary word better to show vacillation progress.
+
+I wanted a function that would take in two arrays of arbitrary length (the `ideas` and the `templates`) and return a random pair from each. I also didn't want to repeat any one item from any consecutive pairs because that would just be some sloppy vacillating. I figured an [infinite iterator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator#An_infinite_iterator) would do the trick, but getting it just right took a bit longer than expected. 😅
+
+Originally, I made the function asynchronous and had a `sleep` in between each vacillation so that it really felt like the computer was vacillating:
 
 ```js
 const sleep = ms => new Promise(
@@ -123,9 +128,9 @@ for (const [idea, template] of iterator) {
   // ...
 ```
 
-Then from a philosophical point of view, I started to think about the concept of writing a program to vacillate for me. We usually write programs to speed things up, so why arbitrarily slow this one down?
+Then from a philosophical point of view, I started to think about the concept of writing a program to vacillate for me. We usually write programs to speed things up, so why arbitrarily slow this one down?  ~~`sleep`~~
 
-This function can vacillate at _most_ 15 times and at _fewest_ 6 times. I feel like I could have gotten silly and dramatically bumped up the total number of possible vacillations.
+This function can vacillate at _most_ 15 times and at _fewest_ 6 times. I feel like I could have gotten silly and dramatically bumped up the total number of possible vacillations. I wonder how many times a vacillating person vacillates on average. 🤔
 
 ### Try it out!
 You can play around with `vacillate` if you open up the JavaScript console on this page. You'll see a friendly message and you can run something like the following:
@@ -137,7 +142,7 @@ You can play around with `vacillate` if you open up the JavaScript console on th
 // make a decision on lunch!
 ```
 
-You can also vacillate (with caution) in your own projects by installing [`vacillate` from npm](https://www.npmjs.com/package/vacillate):
+You can also vacillate in your own projects by installing [`vacillate` from npm](https://www.npmjs.com/package/vacillate):
 
 ```sh
 npm install vacillate
@@ -152,3 +157,28 @@ vacillate('React', 'Ember', 'Svelte', 'Vue');
 ```
 
 > NOTE: `vacillate` is only compatible with new versions of Chrome and Firefox and Node >=12 or so.
+
+#### NEW!
+Now you can `vacillate` from the command line by [installing `vacillate` globally](https://www.npmjs.com/package/vacillate) or using [`npx`](https://www.npmjs.com/package/npx).
+
+```sh
+> npx vacillate cookies cake "ice cream"
+cookies
+What I really meant was: ice cream
+Just kidding: cake
+No wait: cookies
+Just kidding: ice cream
+Actually: cake
+What I really meant was: cookies
+No wait: cake
+Just kidding: ice cream
+Actually: cookies
+What I really meant was: ice cream
+No wait: cake
+Actually: cookies
+cake! (vacillated 14 times)
+
+I choose: cake
+```
+
+CAKE 🍰! (That sounds like a great idea)
