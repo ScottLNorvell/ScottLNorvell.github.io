@@ -24,4 +24,8 @@ layout: default
     console.log('%cWelcome to the Console for "{{page.title}}" [ {{page.pronunciation}} ]', 'font-size: 24px');
   </script>
   <script src="{{ site.baseurl }}/jsvow.js"></script>
+
+  {% unless page.no_comments %}
+    {% include disqus.html %}
+  {% endunless %}
 </article>
